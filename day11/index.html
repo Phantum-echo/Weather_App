@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dominator</title>
+    <!--http://api.weatherapi.com/v1/current.json?key=50a006d9f019497580652449240912&q=Siwan&aqi=no-->
+
+</head>
+<body>
+    <center>
+    <div class="App">
+        <h1>Weather App</h1>
+        <form class="search-form" id="searchForm">
+            <input
+             type="text"
+             placeholder="Enter city Name" 
+             class="search-input"
+             id="cityInput"
+             value="Bihar"
+            >
+            <button type="submit" class="search-button">Submit</button>
+        </form>
+
+        <p id="loadingMsg" style="display: none; text-align: center;">Loading...</p>
+        <p id="errorMsg" class="error-Msg" style="display: none;"></p>
+        <div class="weather-details" id="weatherDetails" style="display: none;"></div>
+    </div>
+    <script>
+        // let student = {
+        //     name: "Adi",
+        //     class: "xii",
+        //     marks: 77,
+        //     address: {
+        //         state: "Bihar",
+        //         city: "siwan"
+
+        //     }
+        // }
+        // const car = {
+        //     name: "Dodge",
+        //     model: "367",
+        //     year: 2021
+        // }
+        // console.log("This is",(car.name))
+        //console.log(student.address.city)
+        
+        // let Resturant = {
+        //     name : {
+        //         one : "Chapatti",
+        //         two : "Paneer",
+        //         three : "Fried Rice",
+        //         four : "normal rice",
+        //         five : "Cold drink"
+        //     },
+        //     price : {
+        //         one : 10,
+        //         two : 79,
+        //         three : 60,
+        //         four : 30,
+        //         five : 45
+
+        //     }
+            
+        // }
+        // Resturant.price.two = "120"
+        // console.log(Resturant.name.one)
+        // console.log(Resturant.price.two)
+        const searchForm = document.getElementById('searchForm');
+        const cityInput = document.getElementById('cityInput');
+        const loadingMsg = document.getElementById('loadingMsg');
+        const errorMsg = document.getElementById('errorMsg');
+        const weatherDetails = document.getElementById('weatherDetails');
+
+        const featchweather = async (city) => {
+            try {
+                loadingMsg.style.display = 'block';
+                errorMsg.style.display = 'none';
+                weatherDetails.style.display = 'none';
+                
+                const response = await fetch (
+                `http://api.weatherapi.com/v1/current.json?key=50a006d9f019497580652449240912&q=${city}&aqi=no`
+                );
+
+                if (!response.ok) {
+                    throw new Error ('Failed to fetch weather data');
+                }
+                const data = await response.json();
+                console.log(data)
+                displayWeather(data);
+            }
+            catch (err) {
+                errorMsg.textContent = 'Falied to fetch data of the city. Please enter valid city';
+                errorMsg.style.display = 'block';
+            } finally {
+                loadingMsg.style.display = 'none';
+            }
+            
+        }
+        
+        function displayWeather(weather) {
+            weatherDetails.innerHTML = `
+            <h2>${weather.location.name}, ${weather.location.country}</h2>
+            <p><strong>Temperature:</strong>${weather.current.temp_c}C</p>
+            <p><strong>Condition:</strong>${weather.current.condition.text}</p>
+            <img src =
+
+            `
+        }
+
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const city = cityInput.value.trim();
+            if(city) {
+                featchweather(city);
+            }
+        });
+        
+        featchweather('Bihar');
+    
+
+    </script>
+    </center>
+</body>
+</html>
